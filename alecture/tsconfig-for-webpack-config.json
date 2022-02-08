@@ -1,3 +1,4 @@
+// 웹팩이 webpack.config.ts 를 인식하게 하려면 이 파일이 존재해야됌
 {
   "compilerOptions": {
     "module": "commonjs",

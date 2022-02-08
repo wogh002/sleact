@@ -1,6 +1,7 @@
 {
+  // ts도 결국 js로 변환된다.
   "compilerOptions": {
-    "esModuleInterop": true,
+    "esModuleInterop": true, //import  * as React from 'react';  -> import React from 'react';
     "sourceMap": true,
     "lib": ["ES2020", "DOM"],
     "jsx": "react",

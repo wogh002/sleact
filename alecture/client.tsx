@@ -1,8 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
 import App from '@layouts/App';
-
+import { BrowserRouter } from 'react-router-dom';
 render(
   <BrowserRouter>
     <App />
@@ -11,5 +10,5 @@ render(
 );
 
 // pages - 서비스 페이지
-// components - 짜잘 컴포넌트
+// components - 짜잘 컴포넌트, 리액트의 작은 컴포넌트들.
 // layouts - 공통 레이아웃

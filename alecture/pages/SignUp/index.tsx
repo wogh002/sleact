@@ -1,13 +1,13 @@
 import useInput from '@hooks/useInput';
 import fetcher from '@utils/fetcher';
-import React, { useCallback, useState, VFC } from 'react';
+import React, { useCallback, useEffect, useState, VFC } from 'react';
 import axios from 'axios';
 import useSWR from 'swr';
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from './styles';
 import { Link, Redirect } from 'react-router-dom';
 
 const SignUp = () => {
-  const { data, error, revalidate } = useSWR('/api/users', fetcher);
+  // const { data, error, revalidate } = useSWR('/api/users', fetcher);
 
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
@@ -17,9 +17,15 @@ const SignUp = () => {
   const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
 
+  useEffect(() => {
+    console.log(password);
+    console.log(mismatchError);
+  }, [password, passwordCheck, mismatchError]);
+
   const onChangePassword = useCallback(
     (e) => {
       setPassword(e.target.value);
+      //같지 않을 경우 true
       setMismatchError(e.target.value !== passwordCheck);
     },
     [passwordCheck],
@@ -60,13 +66,13 @@ const SignUp = () => {
     [email, nickname, password, passwordCheck, mismatchError],
   );
 
-  if (data === undefined) {
-    return <div>로딩중...</div>;
-  }
+  // if (data === undefined) {
+  //   return <div>로딩중...</div>;
+  // }
 
-  if (data) {
-    return <Redirect to="/workspace/sleact/channel/일반" />;
-  }
+  // if (data) {
+  //   return <Redirect to="/workspace/sleact/channel/일반" />;
+  // }
 
   return (
     <div id="container">
@@ -101,10 +107,10 @@ const SignUp = () => {
               onChange={onChangePasswordCheck}
             />
           </div>
-          {mismatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
+          {/* {mismatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
           {!nickname && <Error>닉네임을 입력해주세요.</Error>}
           {signUpError && <Error>{signUpError}</Error>}
-          {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>}
+          {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>} */}
         </Label>
         <Button type="submit">회원가입</Button>
       </Form>
