@@ -78,6 +78,7 @@ const config: webpack.Configuration = {
     port: 3090,
     publicPath: '/dist/',
     // proxy: {
+    // 프론트에서 /api/ 로 요청을 보내는 것들은 주소를  target으로 바꿔서 전송 하겠다.
     //   '/api/': {
     //     target: 'http://localhost:3095',
     //     changeOrigin: true,

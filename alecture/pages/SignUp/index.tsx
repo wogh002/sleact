@@ -5,23 +5,16 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from './styles';
 import { Link, Redirect } from 'react-router-dom';
-
 const SignUp = () => {
-  // const { data, error, revalidate } = useSWR('/api/users', fetcher);
-
+  const { data, error, revalidate } = useSWR('http://localhost:3095/api/users/', fetcher);
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, , setPassword] = useInput('');
   const [passwordCheck, , setPasswordCheck] = useInput('');
+  const [nicknameMessage, setNicknameMessage] = useState(false);
   const [mismatchError, setMismatchError] = useState(false);
   const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
-
-  useEffect(() => {
-    console.log(password);
-    console.log(mismatchError);
-  }, [password, passwordCheck, mismatchError]);
-
   const onChangePassword = useCallback(
     (e) => {
       setPassword(e.target.value);
@@ -38,16 +31,20 @@ const SignUp = () => {
     },
     [password],
   );
-
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
+      if (!nickname) {
+        setNicknameMessage(true);
+        return false;
+      }
       if (!mismatchError && nickname) {
         console.log('서버로 회원가입하기');
+        setNicknameMessage(false);
         setSignUpError('');
         setSignUpSuccess(false);
         axios
-          .post('/api/users', {
+          .post('http://localhost:3095/api/users', {
             email,
             nickname,
             password,
@@ -60,19 +57,19 @@ const SignUp = () => {
             console.log(error.response);
             setSignUpError(error.response.data);
           })
+          //성공 실패 상관없이 실행되는 finally.
           .finally(() => {});
       }
     },
     [email, nickname, password, passwordCheck, mismatchError],
   );
-
   // if (data === undefined) {
   //   return <div>로딩중...</div>;
   // }
 
-  // if (data) {
-  //   return <Redirect to="/workspace/sleact/channel/일반" />;
-  // }
+  if (data) {
+    return <Redirect to="/workspace/channel" />;
+  }
 
   return (
     <div id="container">
@@ -107,10 +104,10 @@ const SignUp = () => {
               onChange={onChangePasswordCheck}
             />
           </div>
-          {/* {mismatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
-          {!nickname && <Error>닉네임을 입력해주세요.</Error>}
+          {mismatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
+          {nicknameMessage && <Error>닉네임을 입력 해주세요.</Error>}
           {signUpError && <Error>{signUpError}</Error>}
-          {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>} */}
+          {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>}
         </Label>
         <Button type="submit">회원가입</Button>
       </Form>
