@@ -16,10 +16,13 @@ interface Props {
 }
 const InviteWorkspaceModal: FC<Props> = ({ show, onCloseModal, setShowInviteWorkspaceModal }) => {
   const { workspace } = useParams<{ workspace: string; channel: string }>();
+
   const [newMember, onChangeNewMember, setNewMember] = useInput('');
-  const { data: userData } = useSWR<IUser>('/api/users', fetcher);
+
+  const { data: userData } = useSWR<IUser>('http://localhost:3095/api/users', fetcher);
+
   const { revalidate: revalidateMember } = useSWR<IChannel[]>(
-    userData ? `/api/workspaces/${workspace}/members` : null,
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
     fetcher,
   );
 
@@ -29,10 +32,17 @@ const InviteWorkspaceModal: FC<Props> = ({ show, onCloseModal, setShowInviteWork
       if (!newMember || !newMember.trim()) {
         return;
       }
+      // 실제 슬랙 회원 유저 이어야 한다.
       axios
-        .post(`/api/workspaces/${workspace}/members`, {
-          email: newMember,
-        })
+        .post(
+          `http://localhost:3095/api/workspaces/${workspace}/members`,
+          {
+            email: newMember,
+          },
+          {
+            withCredentials: true,
+          },
+        )
         .then((response) => {
           revalidateMember();
           setShowInviteWorkspaceModal(false);
@@ -40,7 +50,8 @@ const InviteWorkspaceModal: FC<Props> = ({ show, onCloseModal, setShowInviteWork
         })
         .catch((error) => {
           console.dir(error);
-          toast.error(error.response?.data, { position: 'bottom-center' });
+          toast.configure();
+          toast.error(error.response?.data, { position: 'top-center', autoClose: 1500 });
         });
     },
     [workspace, newMember],

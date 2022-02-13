@@ -1,12 +1,12 @@
 import { CloseModalButton, CreateModal } from '@components/Modal/styles';
 import React, { FC, useCallback } from 'react';
-
 interface Props {
   show: boolean;
   onCloseModal: () => void;
 }
-const Modal: FC<Props> = ({ show, children, onCloseModal }) => {
+const Modal: FC<Props> = ({ show, onCloseModal, children }) => {
   const stopPropagation = useCallback((e) => {
+    // 이벤트 버블링 방지
     e.stopPropagation();
   }, []);
 

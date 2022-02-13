@@ -10,16 +10,23 @@ import gravatar from 'gravatar';
 
 interface Props {
   chat: string;
-  onSubmitForm: (e: any) => void;
-  onChangeChat: (e: any) => void;
-  placeholder?: string;
+  // onSubmitForm: (e: any) => void;
+  // onChangeChat: (e: any) => void;
+  // placeholder?: string;
 }
-const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) => {
+const ChatBox: VFC<Props> = ({ chat }) => {
   const { workspace } = useParams<{ workspace: string }>();
-  const { data: userData, error, revalidate, mutate } = useSWR<IUser | false>('/api/users', fetcher, {
-    dedupingInterval: 2000, // 2초
-  });
-  const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
+  const { data: userData, error, revalidate, mutate } = useSWR<IUser | false>(
+    'http://localhost:3095/api/users',
+    fetcher,
+    {
+      dedupingInterval: 2000, // 2초
+    },
+  );
+  const { data: memberData } = useSWR<IUser[]>(
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
+    fetcher,
+  );
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
@@ -28,17 +35,17 @@ const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) 
     }
   }, []);
 
-  const onKeydownChat = useCallback(
-    (e) => {
-      if (e.key === 'Enter') {
-        if (!e.shiftKey) {
-          e.preventDefault();
-          onSubmitForm(e);
-        }
-      }
-    },
-    [onSubmitForm],
-  );
+  // const onKeydownChat = useCallback(
+  //   (e) => {
+  //     if (e.key === 'Enter') {
+  //       if (!e.shiftKey) {
+  //         e.preventDefault();
+  //         onSubmitForm(e);
+  //       }
+  //     }
+  //   },
+  //   [onSubmitForm],
+  // );
 
   const renderSuggestion = useCallback(
     (
@@ -64,16 +71,19 @@ const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) 
 
   return (
     <ChatArea>
-      <Form onSubmit={onSubmitForm}>
-        <MentionsTextarea
+      {/* <Form onSubmit={onSubmitForm}> */}
+      <Form>
+        {/* <MentionsTextarea
           id="editor-chat"
           value={chat}
-          onChange={onChangeChat}
-          onKeyPress={onKeydownChat}
-          placeholder={placeholder}
-          inputRef={textareaRef}
+          // onChange={onChangeChat}
+          // onKeyPress={onKeydownChat}
+          // placeholder={placeholder}
+          // inputRef={textareaRef}
           allowSuggestionsAboveCursor
-        >
+        > */}
+
+        <MentionsTextarea id="editor-chat" value={chat} allowSuggestionsAboveCursor>
           <Mention
             appendSpaceOnAdd
             trigger="@"

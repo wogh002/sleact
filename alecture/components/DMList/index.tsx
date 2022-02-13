@@ -3,18 +3,23 @@ import { CollapseButton } from '@components/DMList/styles';
 import useSocket from '@hooks/useSocket';
 import { IUser, IUserWithOnline } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState, VFC } from 'react';
 import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import useSWR from 'swr';
 
-const DMList: FC = () => {
+const DMList: VFC = () => {
+  // ? === ts 옵셔널체이닝
   const { workspace } = useParams<{ workspace?: string }>();
-  const { data: userData, error, revalidate, mutate } = useSWR<IUser>('/api/users', fetcher, {
+  console.log('workspace ↓');
+  console.log(workspace);
+
+  const { data: userData, error, revalidate, mutate } = useSWR<IUser>('http://localhost:3095/api/users', fetcher, {
     dedupingInterval: 2000, // 2초
   });
+  // memberData -> 현재 workspace에 참여한 멤버들 불러오기
   const { data: memberData } = useSWR<IUserWithOnline[]>(
-    userData ? `/api/workspaces/${workspace}/members` : null,
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
     fetcher,
   );
   const [socket] = useSocket(workspace);
@@ -25,23 +30,23 @@ const DMList: FC = () => {
     setChannelCollapse((prev) => !prev);
   }, []);
 
-  useEffect(() => {
-    console.log('DMList: workspace 바꼈다', workspace);
-    setOnlineList([]);
-  }, [workspace]);
+  // useEffect(() => {
+  //   console.log('DMList: workspace 바꼈다', workspace);
+  //   setOnlineList([]);
+  // }, [workspace]);
 
-  useEffect(() => {
-    socket?.on('onlineList', (data: number[]) => {
-      setOnlineList(data);
-    });
-    // socket?.on('dm', onMessage);
-    // console.log('socket on dm', socket?.hasListeners('dm'), socket);
-    return () => {
-      // socket?.off('dm', onMessage);
-      // console.log('socket off dm', socket?.hasListeners('dm'));
-      socket?.off('onlineList');
-    };
-  }, [socket]);
+  // useEffect(() => {
+  //   socket?.on('onlineList', (data: number[]) => {
+  //     setOnlineList(data);
+  //   });
+  //   // socket?.on('dm', onMessage);
+  //   // console.log('socket on dm', socket?.hasListeners('dm'), socket);
+  //   return () => {
+  //     // socket?.off('dm', onMessage);
+  //     // console.log('socket off dm', socket?.hasListeners('dm'));
+  //     socket?.off('onlineList');
+  //   };
+  // }, [socket]);
 
   return (
     <>

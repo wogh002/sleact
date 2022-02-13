@@ -44,3 +44,33 @@ export interface IWorkspace {
   url: string; // 주소 창에 보이는 주소
   OwnerId: number; // 워크스페이스 만든 사람 아이디
 }
+
+// ----------------------------------------------------------------------------------
+export interface IworkspaceMember {
+  loggedInAt: string;
+  createdAt: string;
+  updatedAt: string;
+  WorkspaceId: number;
+  UserId: number;
+}
+
+export interface Iworkspaces {
+  OwnerId: null | string;
+  WorkspaceMember: IworkspaceMember;
+  createdAt: string;
+  deletedAt: null | string;
+  id: number;
+  name: string;
+  updatedAt: string;
+  url: string;
+}
+export interface IworkspaceUserData {
+  Workspaces: Iworkspaces[];
+  createdAt: string;
+  deletedAt: null | string;
+  email: string;
+  id: number;
+  nickname: string;
+  password: string;
+  updatedAt: string;
+}

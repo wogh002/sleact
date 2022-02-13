@@ -8,20 +8,24 @@ import React, { useCallback, VFC } from 'react';
 import { useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
-
 interface Props {
   show: boolean;
   onCloseModal: () => void;
   setShowCreateChannelModal: (flag: boolean) => void;
 }
+interface useParam {
+  workspace: string;
+  channel: string;
+}
+
+// 객체는 <> 제네릭의 타입만 사용해야 하고 return 되는 값들도 제네릭의 타입과 일치 하여야 한다.
 const CreateChannelModal: VFC<Props> = ({ show, onCloseModal, setShowCreateChannelModal }) => {
   const [newChannel, onChangeNewChannel, setNewChannel] = useInput('');
-  const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
-  const { data: userData, error, revalidate } = useSWR<IUser | false>('/api/users', fetcher, {
-    dedupingInterval: 2000, // 2초
-  });
-  const { data: channelData, mutate, revalidate: revalidateChannel } = useSWR<IChannel[]>(
-    userData ? `/api/workspaces/${workspace}/channels` : null,
+  const { workspace } = useParams<useParam>();
+
+  const { data: userData } = useSWR<IUser | false>('http://localhost:3095/api/users/', fetcher);
+  const { revalidate: revalidateChannel } = useSWR<IChannel[]>(
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
     fetcher,
   );
 
@@ -30,7 +34,7 @@ const CreateChannelModal: VFC<Props> = ({ show, onCloseModal, setShowCreateChann
       e.preventDefault();
       axios
         .post(
-          `/api/workspaces/${workspace}/channels`,
+          `http://localhost:3095/api/workspaces/${workspace}/channels`,
           {
             name: newChannel,
           },
