@@ -10,11 +10,11 @@ import gravatar from 'gravatar';
 
 interface Props {
   chat: string;
-  // onSubmitForm: (e: any) => void;
-  // onChangeChat: (e: any) => void;
-  // placeholder?: string;
+  onSubmitForm: (e: any) => void;
+  onChangeChat: (e: any) => void;
+  placeholder?: string;
 }
-const ChatBox: VFC<Props> = ({ chat }) => {
+const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) => {
   const { workspace } = useParams<{ workspace: string }>();
   const { data: userData, error, revalidate, mutate } = useSWR<IUser | false>(
     'http://localhost:3095/api/users',
@@ -35,17 +35,17 @@ const ChatBox: VFC<Props> = ({ chat }) => {
     }
   }, []);
 
-  // const onKeydownChat = useCallback(
-  //   (e) => {
-  //     if (e.key === 'Enter') {
-  //       if (!e.shiftKey) {
-  //         e.preventDefault();
-  //         onSubmitForm(e);
-  //       }
-  //     }
-  //   },
-  //   [onSubmitForm],
-  // );
+  const onKeydownChat = useCallback(
+    (e) => {
+      if (e.key === 'Enter') {
+        if (!e.shiftKey) {
+          e.preventDefault();
+          onSubmitForm(e);
+        }
+      }
+    },
+    [onSubmitForm],
+  );
 
   const renderSuggestion = useCallback(
     (
@@ -71,19 +71,16 @@ const ChatBox: VFC<Props> = ({ chat }) => {
 
   return (
     <ChatArea>
-      {/* <Form onSubmit={onSubmitForm}> */}
-      <Form>
-        {/* <MentionsTextarea
+      <Form onSubmit={onSubmitForm}>
+        <MentionsTextarea
           id="editor-chat"
           value={chat}
-          // onChange={onChangeChat}
-          // onKeyPress={onKeydownChat}
-          // placeholder={placeholder}
-          // inputRef={textareaRef}
+          onChange={onChangeChat}
+          onKeyPress={onKeydownChat}
+          placeholder={placeholder}
           allowSuggestionsAboveCursor
-        > */}
-
-        <MentionsTextarea id="editor-chat" value={chat} allowSuggestionsAboveCursor>
+          inputRef={textareaRef}
+        >
           <Mention
             appendSpaceOnAdd
             trigger="@"

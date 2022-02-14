@@ -4,6 +4,7 @@ import { IDM, IChat } from '@typings/db';
 import React, { useCallback, forwardRef, RefObject, MutableRefObject } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 
+// 대화내용들
 const ChatList = () => {
   return (
     <ChatZone>
